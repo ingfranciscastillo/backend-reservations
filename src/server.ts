@@ -1,6 +1,7 @@
 import { app } from "./app.js";
+import { config } from "./config/env.js";
 
-const PORT = 3333;
+const PORT = config.port || 3333;
 
 const start = async () => {
   try {
