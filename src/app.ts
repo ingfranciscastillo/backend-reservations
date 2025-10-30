@@ -14,6 +14,7 @@ import { config } from "./config/env.js";
 
 // rutas
 import authRoutes from "./modules/auth/auth.routes.js";
+import propertiesRoutes from "./modules/properties/properties.routes.js";
 
 export async function build(opts = {}) {
   const app = Fastify({
@@ -76,6 +77,7 @@ export async function build(opts = {}) {
 
   // módulos
   await app.register(authRoutes, { prefix: "/api/auth" });
+  await app.register(propertiesRoutes, { prefix: "/api/properties" });
 
   // 404 Handler
   app.setNotFoundHandler((request, reply) => {

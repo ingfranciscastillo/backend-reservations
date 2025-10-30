@@ -1,6 +1,6 @@
 import type { FastifyInstance } from "fastify";
 import type { ZodTypeProvider } from "fastify-type-provider-zod";
-import { AuthService } from "./auth.services.js";
+import { AuthService } from "./auth.service.js";
 import { AuthController } from "./auth.controller.js";
 import {
   registerSchema,

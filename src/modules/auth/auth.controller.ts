@@ -1,5 +1,5 @@
 import type { FastifyRequest, FastifyReply } from "fastify";
-import { AuthService } from "./auth.services.js";
+import { AuthService } from "./auth.service.js";
 import type {
   RegisterInput,
   LoginInput,
