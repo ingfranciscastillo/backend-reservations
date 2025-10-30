@@ -118,15 +118,15 @@ export class PropertiesService {
 
   async getById(propertyId: string): Promise<PropertyWithDetails | undefined> {
     // Subquery para reviews
-    const reviewsSubquery = db
+    const reviewsAgg = db
       .select({
         propertyId: reviews.propertyId,
-        avgRating: sql<number>`AVG(${reviews.rating})`,
-        reviewCount: sql<number>`COUNT(*)`,
+        avgRating: sql<number>`AVG(${reviews.rating})`.as("avgRating"),
+        reviewCount: sql<number>`COUNT(*)`.as("reviewCount"),
       })
       .from(reviews)
-      .where(eq(reviews.propertyId, propertyId))
-      .groupBy(reviews.propertyId);
+      .groupBy(reviews.propertyId)
+      .as("r");
 
     const result = await db
       .select({
@@ -154,12 +154,12 @@ export class PropertiesService {
         hostName: sql<string>`${users.firstName} || ' ' || ${users.lastName}`,
         hostAvatar: users.avatarUrl,
         hostVerified: users.verified,
-        avgRating: sql<number>`COALESCE(r.avgRating, 0)`,
-        reviewCount: sql<number>`COALESCE(r.reviewCount, 0)`,
+        avgRating: sql<number>`COALESCE(${reviewsAgg.avgRating}, 0)`,
+        reviewCount: sql<number>`COALESCE(${reviewsAgg.reviewCount}, 0)`,
       })
       .from(properties)
       .leftJoin(users, eq(properties.hostId, users.id))
-      .leftJoin(reviewsSubquery.as("r"), eq(properties.id, sql`r.propertyId`))
+      .leftJoin(reviewsAgg, eq(properties.id, reviewsAgg.propertyId))
       .where(eq(properties.id, propertyId));
 
     return result[0];

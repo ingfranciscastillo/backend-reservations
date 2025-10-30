@@ -20,7 +20,7 @@ export class PropertiesController {
       );
       return { property };
     } catch (error) {
-      reply.status(400).send({
+      return reply.status(400).send({
         error: error instanceof Error ? error.message : "Error desconocido",
       });
     }
@@ -42,7 +42,7 @@ export class PropertiesController {
 
       return { properties, count: properties.length };
     } catch (error) {
-      reply.status(500).send({
+      return reply.status(500).send({
         error: error instanceof Error ? error.message : "Error desconocido",
       });
     }
@@ -61,7 +61,7 @@ export class PropertiesController {
 
       return { property };
     } catch (error) {
-      reply.status(500).send({
+      return reply.status(500).send({
         error: error instanceof Error ? error.message : "Error desconocido",
       });
     }
@@ -82,7 +82,7 @@ export class PropertiesController {
       );
       return { property };
     } catch (error) {
-      reply.status(400).send({
+      return reply.status(400).send({
         error: error instanceof Error ? error.message : "Error desconocido",
       });
     }
@@ -96,7 +96,7 @@ export class PropertiesController {
       await this.propertiesService.delete(request.params.id, request.user.id);
       return { success: true };
     } catch (error) {
-      reply.status(400).send({
+      return reply.status(400).send({
         error: error instanceof Error ? error.message : "Error desconocido",
       });
     }
