@@ -6,6 +6,8 @@ import {
   registerSchema,
   loginSchema,
   updateProfileSchema,
+  registerResponseSchema,
+  authResponseSchema,
 } from "./auth.schemas.js";
 
 export default async function authRoutes(fastify: FastifyInstance) {
@@ -20,13 +22,7 @@ export default async function authRoutes(fastify: FastifyInstance) {
       schema: {
         body: registerSchema,
         response: {
-          200: {
-            type: "object",
-            properties: {
-              user: { type: "object" },
-              token: { type: "string" },
-            },
-          },
+          200: registerResponseSchema,
         },
       },
     },
@@ -40,13 +36,7 @@ export default async function authRoutes(fastify: FastifyInstance) {
       schema: {
         body: loginSchema,
         response: {
-          200: {
-            type: "object",
-            properties: {
-              user: { type: "object" },
-              token: { type: "string" },
-            },
-          },
+          200: authResponseSchema,
         },
       },
     },

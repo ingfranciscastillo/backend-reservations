@@ -15,7 +15,7 @@ export class AuthController {
   ) {
     try {
       const user = await this.authService.register(request.body);
-      const token = reply.jwtSign({
+      const token = await reply.jwtSign({
         id: user.id,
         email: user.email,
         role: user.role,
@@ -35,7 +35,7 @@ export class AuthController {
   ) {
     try {
       const user = await this.authService.login(request.body);
-      const token = reply.sign({
+      const token = await reply.jwtSign({
         id: user.id,
         email: user.email,
         role: user.role,

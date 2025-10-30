@@ -5,7 +5,22 @@ export const registerSchema = z.object({
   password: z.string().min(8, "La contraseña debe tener al menos 8 caracteres"),
   firstName: z.string().min(2, "El nombre debe tener al menos 2 caracteres"),
   lastName: z.string().min(2, "El apellido debe tener al menos 2 caracteres"),
-  role: z.enum(["guest", "host"]).default("guest"),
+  role: z.enum(["guest", "host", "admin"]).default("guest"),
+});
+
+export const registerResponseSchema = z.object({
+  user: z.object({
+    id: z.string(),
+    email: z.email(),
+    firstName: z.string(),
+    lastName: z.string(),
+    role: z.enum(["guest", "host"]),
+    phone: z.string().nullable(),
+    avatarUrl: z.url().nullable(),
+    createdAt: z.date(),
+    updatedAt: z.date(),
+  }),
+  token: z.string(),
 });
 
 export const loginSchema = z.object({
@@ -20,7 +35,22 @@ export const updateProfileSchema = z.object({
     .string()
     .regex(/^\+?[1-9]\d{1,14}$/)
     .optional(),
-  avatarUrl: z.string().url().optional(),
+  avatarUrl: z.url().optional(),
+});
+
+export const authResponseSchema = z.object({
+  user: z.object({
+    id: z.string(),
+    email: z.email(),
+    firstName: z.string(),
+    lastName: z.string(),
+    role: z.enum(["guest", "host", "admin"]),
+    phone: z.string().nullable(),
+    avatarUrl: z.url().nullable(),
+    createdAt: z.date(),
+    updatedAt: z.date(),
+  }),
+  token: z.string(),
 });
 
 export type RegisterInput = z.infer<typeof registerSchema>;

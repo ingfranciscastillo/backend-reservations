@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import { db } from "../../config/db/index.js";
-import { users, type User, type NewUser } from "../../config/db/schema.js";
+import { users, type NewUser, type User } from "../../config/db/schema.js";
 import { eq } from "drizzle-orm";
 import type {
   RegisterInput,
