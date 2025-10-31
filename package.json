@@ -16,6 +16,13 @@
     "test": "vitest",
     "test:coverage": "vitest --coverage",
     "test:watch": "vitest --watch",
+    "test:auth": "vitest run auth.test",
+    "test:properties": "vitest run properties.test",
+    "test:bookings": "vitest run bookings.test",
+    "test:reviews": "vitest run reviews.test",
+    "test:payments": "vitest run payments.test",
+    "test:chat": "vitest run chat.test",
+    "test:verification": "vitest run verification.test",
     "type-check": "tsc --noEmit"
   },
   "keywords": [],
