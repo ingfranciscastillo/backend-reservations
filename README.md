@@ -24,7 +24,7 @@
 
 ```bash
 # 1. Clonar e instalar
-git clone <repo>
+git clone https://github.com/ingfranciscastillo/backend-reservations
 cd airbnb-backend
 npm install
 
