@@ -17,6 +17,7 @@ import authRoutes from "./modules/auth/auth.routes.js";
 import propertiesRoutes from "./modules/properties/properties.routes.js";
 import { errorHandler } from "./middleware/error.middleware.js";
 import bookingsRoutes from "./modules/bookings/bookings.routes.js";
+import reviewsRoutes from "./modules/reviews/reviews.routes.js";
 
 export async function build(opts = {}) {
   const app = Fastify({
@@ -81,6 +82,7 @@ export async function build(opts = {}) {
   await app.register(authRoutes, { prefix: "/api/auth" });
   await app.register(propertiesRoutes, { prefix: "/api/properties" });
   await app.register(bookingsRoutes, { prefix: "/api/bookings" });
+  await app.register(reviewsRoutes, { prefix: "/api/reviews" });
 
   app.setErrorHandler(errorHandler);
 
