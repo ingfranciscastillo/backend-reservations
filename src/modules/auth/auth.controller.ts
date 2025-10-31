@@ -23,7 +23,7 @@ export class AuthController {
 
       return { user, token };
     } catch (error) {
-      reply.status(400).send({
+      return reply.status(400).send({
         error: error instanceof Error ? error.message : "Error desconocido",
       });
     }
@@ -43,7 +43,7 @@ export class AuthController {
 
       return { user, token };
     } catch (error) {
-      reply.status(401).send({
+      return reply.status(401).send({
         error: error instanceof Error ? error.message : "Error desconocido",
       });
     }
@@ -70,7 +70,7 @@ export class AuthController {
       );
       return { user };
     } catch (error) {
-      reply.status(400).send({
+      return reply.status(400).send({
         error: error instanceof Error ? error.message : "Error desconocido",
       });
     }

@@ -1,13 +1,12 @@
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import { build } from "../../app";
 import { db } from "../../config/db/index";
-import { users, properties, bookings, reviews } from "../../config/db/schema";
+import { users, properties, bookings, payments } from "../../config/db/schema";
 import { eq } from "drizzle-orm";
 
-describe("Reviews Module", () => {
+describe("Payments Module", () => {
   let app: Awaited<ReturnType<typeof build>>;
   let guestToken: string;
-  let hostToken: string;
   let guestId: string;
   let hostId: string;
   let propertyId: string;
@@ -16,20 +15,20 @@ describe("Reviews Module", () => {
   beforeAll(async () => {
     app = await build();
 
-    // Setup similar al test de bookings
+    // Setup host, guest, property, booking
     const hostAuth = await app.inject({
       method: "POST",
       url: "/api/auth/register",
       payload: {
-        email: "review-host@example.com",
+        email: "payment-host@example.com",
         password: "HostPass123",
-        firstName: "Review",
+        firstName: "Payment",
         lastName: "Host",
         role: "host",
       },
     });
 
-    hostToken = hostAuth.json().token;
+    const hostToken = hostAuth.json().token;
     hostId = hostAuth.json().user.id;
 
     const propertyResponse = await app.inject({
@@ -37,18 +36,18 @@ describe("Reviews Module", () => {
       url: "/api/properties",
       headers: { authorization: `Bearer ${hostToken}` },
       payload: {
-        title: "Review Test Property",
-        description: "Test property for reviews",
-        propertyType: "house",
-        pricePerNight: 150,
-        latitude: 18.5,
+        title: "Payment Test Property",
+        description: "Test property for payments",
+        propertyType: "apartment",
+        pricePerNight: 100,
+        latitude: 18.4,
         longitude: -69.9,
-        address: "456 Review St",
+        address: "789 Payment St",
         city: "Santo Domingo",
         country: "DR",
-        guests: 4,
-        bedrooms: 2,
-        beds: 2,
+        guests: 2,
+        bedrooms: 1,
+        beds: 1,
         bathrooms: 1,
         amenities: ["wifi"],
         images: ["https://example.com/img.jpg"],
@@ -73,9 +72,9 @@ describe("Reviews Module", () => {
       method: "POST",
       url: "/api/auth/register",
       payload: {
-        email: "review-guest@example.com",
+        email: "payment-guest@example.com",
         password: "GuestPass123",
-        firstName: "Review",
+        firstName: "Payment",
         lastName: "Guest",
       },
     });
@@ -83,30 +82,30 @@ describe("Reviews Module", () => {
     guestToken = guestAuth.json().token;
     guestId = guestAuth.json().user.id;
 
-    // Crear y completar una reserva
     const bookingResponse = await app.inject({
       method: "POST",
       url: "/api/bookings",
       headers: { authorization: `Bearer ${guestToken}` },
       payload: {
         propertyId,
-        checkIn: "2025-11-01",
-        checkOut: "2025-11-05",
+        checkIn: "2025-11-10",
+        checkOut: "2025-11-15",
         guests: 2,
       },
     });
 
     bookingId = bookingResponse.json().booking.id;
 
-    // Marcar como completada directamente en DB para el test
+    // Confirmar reserva
     await db
       .update(bookings)
-      .set({ status: "completed" })
+      .set({ status: "confirmed" })
       .where(eq(bookings.id, bookingId));
   });
 
   afterAll(async () => {
-    await db.delete(reviews).where(eq(reviews.bookingId, bookingId));
+    // Cleanup
+    await db.delete(payments).where(eq(payments.bookingId, bookingId));
     await db.delete(bookings).where(eq(bookings.id, bookingId));
     await db.delete(properties).where(eq(properties.id, propertyId));
     await db.delete(users).where(eq(users.id, hostId));
@@ -114,53 +113,35 @@ describe("Reviews Module", () => {
     await app.close();
   });
 
-  it("should create a review", async () => {
+  it("should process payment", async () => {
     const response = await app.inject({
       method: "POST",
-      url: "/api/reviews",
+      url: "/api/payments/process",
       headers: {
         authorization: `Bearer ${guestToken}`,
       },
       payload: {
         bookingId,
-        revieweeId: hostId,
-        propertyId,
-        rating: 5,
-        comment: "Amazing stay! Highly recommended.",
-        reviewType: "guest_to_host",
+        paymentMethod: "credit_card",
+        transactionId: "tx_123456",
       },
     });
 
     expect(response.statusCode).toBe(200);
-    expect(response.json().review).toHaveProperty("id");
-    expect(response.json().review.rating).toBe(5);
+    expect(response.json().payment).toHaveProperty("id");
+    expect(response.json().payment.paymentStatus).toBe("completed");
   });
 
-  it("should get property reviews", async () => {
+  it("should get user payments", async () => {
     const response = await app.inject({
       method: "GET",
-      url: `/api/reviews/property/${propertyId}`,
-    });
-
-    expect(response.statusCode).toBe(200);
-    expect(response.json().reviews).toBeInstanceOf(Array);
-  });
-
-  it("should fail with invalid rating", async () => {
-    const response = await app.inject({
-      method: "POST",
-      url: "/api/reviews",
+      url: "/api/payments/my-payments",
       headers: {
         authorization: `Bearer ${guestToken}`,
       },
-      payload: {
-        bookingId,
-        revieweeId: hostId,
-        rating: 6, // Rating inválido
-        reviewType: "guest_to_host",
-      },
     });
 
-    expect(response.statusCode).toBe(400);
+    expect(response.statusCode).toBe(200);
+    expect(response.json().payments).toBeInstanceOf(Array);
   });
 });

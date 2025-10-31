@@ -16,7 +16,7 @@ export class ReviewsController {
       );
       return { review };
     } catch (error) {
-      reply.status(400).send({
+      return reply.status(400).send({
         error: error instanceof Error ? error.message : "Error desconocido",
       });
     }
@@ -32,7 +32,7 @@ export class ReviewsController {
       );
       return { reviews, count: reviews.length };
     } catch (error) {
-      reply.status(500).send({
+      return reply.status(500).send({
         error: error instanceof Error ? error.message : "Error desconocido",
       });
     }
@@ -48,7 +48,7 @@ export class ReviewsController {
       );
       return { reviews, count: reviews.length };
     } catch (error) {
-      reply.status(500).send({
+      return reply.status(500).send({
         error: error instanceof Error ? error.message : "Error desconocido",
       });
     }
@@ -62,7 +62,7 @@ export class ReviewsController {
       const stats = await this.reviewsService.getStats(request.params.userId);
       return { stats };
     } catch (error) {
-      reply.status(500).send({
+      return reply.status(500).send({
         error: error instanceof Error ? error.message : "Error desconocido",
       });
     }

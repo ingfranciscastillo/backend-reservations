@@ -18,7 +18,7 @@ const getDaysBetween = (start: string, end: string): number => {
   return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 };
 
-interface BookingWithDetails extends Booking {
+export interface BookingWithDetails extends Booking {
   propertyTitle: string;
   propertyAddress: string;
   propertyImages: string[];

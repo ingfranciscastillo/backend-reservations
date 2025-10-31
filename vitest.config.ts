@@ -7,6 +7,13 @@ export default defineConfig({
     coverage: {
       provider: "v8",
       reporter: ["text", "html"],
+      exclude: [
+        "node_modules",
+        "src/config",
+        "**/*.test.ts",
+        "dist",
+        "drizzle/",
+      ],
     },
   },
 });

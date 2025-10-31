@@ -18,6 +18,9 @@ import propertiesRoutes from "./modules/properties/properties.routes.js";
 import { errorHandler } from "./middleware/error.middleware.js";
 import bookingsRoutes from "./modules/bookings/bookings.routes.js";
 import reviewsRoutes from "./modules/reviews/reviews.routes.js";
+import paymentsRoutes from "./modules/payments/payments.routes.js";
+import chatRoutes from "./modules/chat/chat.routes.js";
+import verificationRoutes from "./modules/verification/verification.routes.js";
 
 export async function build(opts = {}) {
   const app = Fastify({
@@ -83,6 +86,9 @@ export async function build(opts = {}) {
   await app.register(propertiesRoutes, { prefix: "/api/properties" });
   await app.register(bookingsRoutes, { prefix: "/api/bookings" });
   await app.register(reviewsRoutes, { prefix: "/api/reviews" });
+  await app.register(paymentsRoutes, { prefix: "/api/payments" });
+  await app.register(chatRoutes, { prefix: "/api/chat" });
+  await app.register(verificationRoutes, { prefix: "/api/verification" });
 
   app.setErrorHandler(errorHandler);
 

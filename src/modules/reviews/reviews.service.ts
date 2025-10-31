@@ -9,13 +9,13 @@ import {
 import { eq, and, desc, sql, count } from "drizzle-orm";
 import type { CreateReviewInput } from "./reviews.schemas.js";
 
-interface ReviewWithDetails extends Review {
+export interface ReviewWithDetails extends Review {
   reviewerName: string;
   reviewerAvatar: string | null;
   propertyTitle?: string;
 }
 
-interface ReviewStats {
+export interface ReviewStats {
   totalReviews: number;
   averageRating: number;
   fiveStarCount: number;
@@ -84,14 +84,14 @@ export class ReviewsService {
         bookingId,
         reviewerId,
         revieweeId,
-        propertyId: propertyId || null,
+        propertyId: propertyId,
         rating,
-        comment: comment || null,
+        comment: comment,
         reviewType,
       })
       .returning();
 
-    return review;
+    return review!;
   }
 
   async getPropertyReviews(propertyId: string): Promise<ReviewWithDetails[]> {
@@ -161,6 +161,6 @@ export class ReviewsService {
       .from(reviews)
       .where(eq(reviews.revieweeId, userId));
 
-    return result[0];
+    return result[0]!;
   }
 }
